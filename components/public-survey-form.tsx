@@ -8,6 +8,7 @@ type Question = {
   type: string
   label: string
   help_text: string | null
+  placeholder: string | null
   is_required: boolean
   question_options: { label: string; value: string }[]
 }
