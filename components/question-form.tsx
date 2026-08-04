@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { questionTypes, questionTypeLabels, typesWithOptions } from "@/lib/validations/question"
+import { questionTypes, questionTypeLabels, typesWithOptions, typesWithPlaceholder } from "@/lib/validations/question"
 
 type Question = {
   id?: string
@@ -52,20 +52,38 @@ export default function QuestionForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Pregunta</label>
+        <label className="block text-sm font-medium">
+          {type === "section" ? "Texto de la sección" : "Pregunta"}
+        </label>
         <input
           name="label" required defaultValue={question?.label ?? ""}
           className="mt-1 w-full rounded border px-3 py-2"
+          placeholder={type === "section" ? "Ej: Información del egresado" : ""}
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium">Texto de ayuda (opcional)</label>
-        <input
-          name="help_text" defaultValue={question?.help_text ?? ""}
-          className="mt-1 w-full rounded border px-3 py-2"
-        />
-      </div>
+      {type !== "section" && (
+        <>
+          <div>
+            <label className="block text-sm font-medium">Texto de ayuda (opcional)</label>
+            <input
+              name="help_text" defaultValue={question?.help_text ?? ""}
+              className="mt-1 w-full rounded border px-3 py-2"
+            />
+          </div>
+
+          {typesWithPlaceholder.includes(type) && (
+            <div>
+              <label className="block text-sm font-medium">Ejemplo (dentro de la caja)</label>
+              <input
+                name="placeholder" defaultValue={question?.placeholder ?? ""}
+                className="mt-1 w-full rounded border px-3 py-2"
+                placeholder="Ej: Juan Pérez Gómez"
+              />
+            </div>
+          )}
+        </>
+      )}
 
       {typesWithOptions.includes(type) && (
         <div>
@@ -96,10 +114,12 @@ export default function QuestionForm({
         </div>
       )}
 
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="is_required" defaultChecked={question?.is_required ?? false} />
-        Obligatoria
-      </label>
+      {type !== "section" && (
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="is_required" defaultChecked={question?.is_required ?? false} />
+            Obligatoria
+          </label>
+        )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

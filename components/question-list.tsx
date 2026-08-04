@@ -33,15 +33,16 @@ export default function QuestionList({ surveyId, questions }: { surveyId: string
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-400">{questionTypeLabels[q.type]}</p>
-                <p className="font-medium">
-                  {q.label} {q.is_required && <span className="text-red-500">*</span>}
-                </p>
-                {q.question_options?.length > 0 && (
-                  <p className="mt-1 text-xs text-gray-500">
-                    {q.question_options.map((o) => o.label).join(", ")}
+              {q.type === "section" ? (
+                <p className="text-lg font-serif font-semibold text-[#1B2A4A]">{q.label}</p>
+              ) : (
+                <>
+                  <p className="text-xs text-gray-400">{questionTypeLabels[q.type]}</p>
+                  <p className="font-medium">
+                    {q.label} {q.is_required && <span className="text-red-500">*</span>}
                   </p>
-                )}
+                </>
+              )}
               </div>
               <div className="flex gap-3 text-sm">
                 <form action={moveQuestion.bind(null, surveyId, q.id, "up")}>

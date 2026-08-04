@@ -27,6 +27,7 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
     .from("questions").select("id, is_required, type").eq("survey_id", surveyId)
 
   for (const q of questions ?? []) {
+    if (q.type === "section") continue
     if (q.is_required) {
       const value = formData.get(`q_${q.id}`)
       const values = formData.getAll(`q_${q.id}`)
@@ -50,6 +51,7 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
   if (responseError || !response) return { error: "Error al guardar la respuesta" }
 
   const answers = (questions ?? []).map((q) => {
+    if (q.type === "section") return null
     if (q.type === "checkbox") {
       const values = formData.getAll(`q_${q.id}`) as string[]
       return { response_id: response.id, question_id: q.id, answer_json: values }

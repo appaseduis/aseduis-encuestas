@@ -51,20 +51,28 @@ export default function PublicSurveyForm({
   return (
     <form action={handleSubmit} className="mt-8 space-y-5">
       {questions.map((q, i) => (
-        <div key={q.id} className="rounded-2xl border border-[#E7E0D2] bg-white p-5">
-          <div className="mb-1 flex items-baseline gap-2">
-            <span className="font-serif text-xs font-semibold text-[#B98A2F]">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <label className="text-[15px] font-medium leading-snug text-[#201C16]">
-              {q.label} {q.is_required && <span className="text-[#B54B3B]">*</span>}
-            </label>
+        q.type === "section" ? (
+          <div key={q.id} className="pt-2 first:pt-0">
+            <h2 className="font-serif text-lg font-semibold text-[#1B2A4A]">{q.label}</h2>
+            {q.help_text && <p className="mt-1 text-sm text-[#9C9280]">{q.help_text}</p>}
+            <div className="mt-3 h-px bg-[#E7E0D2]" />
           </div>
-          {q.help_text && <p className="mb-2 ml-6 text-xs text-[#9C9280]">{q.help_text}</p>}
-          <div className="ml-6">
-            <QuestionInput question={q} />
+        ) : (
+          <div key={q.id} className="rounded-2xl border border-[#E7E0D2] bg-white p-5">
+            <div className="mb-1 flex items-baseline gap-2">
+              <span className="font-serif text-xs font-semibold text-[#B98A2F]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <label className="text-[15px] font-medium leading-snug text-[#201C16]">
+                {q.label} {q.is_required && <span className="text-[#B54B3B]">*</span>}
+              </label>
+            </div>
+            {q.help_text && <p className="mb-2 ml-6 text-xs text-[#9C9280]">{q.help_text}</p>}
+            <div className="ml-6">
+              <QuestionInput question={q} />
+            </div>
           </div>
-        </div>
+        )
       ))}
 
       {error && (
@@ -89,15 +97,15 @@ function QuestionInput({ question: q }: { question: Question }) {
 
   switch (q.type) {
     case "short_text": case "email": case "phone":
-      return <input name={name} type={q.type === "email" ? "email" : "text"} className={inputClass} required={q.is_required} />
+      return <input name={name} type={q.type === "email" ? "email" : "text"} className={inputClass} required={q.is_required} placeholder={q.placeholder ?? undefined} />
     case "long_text":
-      return <textarea name={name} className={inputClass} rows={4} required={q.is_required} />
+      return <textarea name={name} className={inputClass} rows={4} required={q.is_required} placeholder={q.placeholder ?? undefined} />
     case "number":
-      return <input name={name} type="number" className={inputClass} required={q.is_required} />
+      return <input name={name} type="number" className={inputClass} required={q.is_required} placeholder={q.placeholder ?? undefined} />
     case "date":
-      return <input name={name} type="date" className={inputClass} required={q.is_required} />
+      return <input name={name} type="date" className={inputClass} required={q.is_required} placeholder={q.placeholder ?? undefined} />
     case "time":
-      return <input name={name} type="time" className={inputClass} required={q.is_required} />
+      return <input name={name} type="time" className={inputClass} required={q.is_required} placeholder={q.placeholder ?? undefined} />
 
     case "radio":
       return (

@@ -15,6 +15,7 @@ export async function createQuestion(surveyId: string, formData: FormData): Prom
     type: formData.get("type") as string,
     label: formData.get("label") as string,
     help_text: formData.get("help_text") as string,
+    placeholder: formData.get("placeholder") as string,
     is_required: formData.get("is_required") === "on",
   }
   const parsed = questionSchema.safeParse(raw)
@@ -52,6 +53,7 @@ export async function updateQuestion(surveyId: string, questionId: string, formD
     type: formData.get("type") as string,
     label: formData.get("label") as string,
     help_text: formData.get("help_text") as string,
+    placeholder: formData.get("placeholder") as string,
     is_required: formData.get("is_required") === "on",
   }
   const parsed = questionSchema.safeParse(raw)
