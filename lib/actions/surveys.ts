@@ -143,7 +143,7 @@ export async function toggleSurveyStatus(id: string, currentStatus: string) {
 
   const newStatus = currentStatus === "active" ? "closed" : "active"
   const { error } = await supabase.from("surveys").update({ status: newStatus }).eq("id", id)
-  if (error) return { error: error.message }
+  if (error) return
 
   await supabase.from("audit_log").insert({
     admin_id: user.id, action: `status_${newStatus}`, entity: "survey", entity_id: id,
@@ -158,7 +158,7 @@ export async function deleteSurvey(id: string) {
   if (!user) return
 
   const { error } = await supabase.from("surveys").delete().eq("id", id)
-  if (error) return { error: error.message }
+  if (error) return
 
   await supabase.from("audit_log").insert({
     admin_id: user.id, action: "delete", entity: "survey", entity_id: id,
