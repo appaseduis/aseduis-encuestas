@@ -90,13 +90,12 @@ export async function updateSurvey(id: string, formData: FormData): Promise<Acti
 export async function duplicateSurvey(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: "No autenticado" }
+  if (!user) return
 
   const { data: original } = await supabase.from("surveys").select("*").eq("id", id).single()
-  if (!original) return { error: "Encuesta no encontrada" }
+  if (!original) return
 
   const newSlug = `${original.slug}-copia-${Date.now().toString(36)}`
-
   const { data: copy, error } = await supabase.from("surveys").insert({
     title: `${original.title} (copia)`,
     description: original.description,
@@ -108,7 +107,8 @@ export async function duplicateSurvey(id: string) {
     is_public: original.is_public,
     created_by: user.id,
   }).select("id").single()
-  if (error || !copy) return { error: error?.message ?? "Error al duplicar" }
+  if (error || !copy) return
+
 
   const { data: questions } = await supabase
     .from("questions").select("*, question_options(*)").eq("survey_id", id).order("order_index")
@@ -139,7 +139,7 @@ export async function duplicateSurvey(id: string) {
 export async function toggleSurveyStatus(id: string, currentStatus: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: "No autenticado" }
+  if (!user) return
 
   const newStatus = currentStatus === "active" ? "closed" : "active"
   const { error } = await supabase.from("surveys").update({ status: newStatus }).eq("id", id)
@@ -155,7 +155,7 @@ export async function toggleSurveyStatus(id: string, currentStatus: string) {
 export async function deleteSurvey(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: "No autenticado" }
+  if (!user) return
 
   const { error } = await supabase.from("surveys").delete().eq("id", id)
   if (error) return { error: error.message }
