@@ -45,9 +45,7 @@ export default async function PublicSurveyPage({ params }: { params: Promise<{ s
         {survey.description && (
           <p className="mt-3 text-[15px] leading-relaxed text-[#5B5646]">{survey.description}</p>
         )}
-        <p className="mt-4 text-xs uppercase tracking-wide text-[#9C9280]">
-          {questions?.length ?? 0} preguntas · ASEDUIS
-        </p>
+        
 
         <PublicSurveyForm
           surveyId={survey.id}
