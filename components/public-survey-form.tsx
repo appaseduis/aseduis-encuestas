@@ -37,14 +37,16 @@ export default function PublicSurveyForm({
 
   if (done) {
     return (
-      <div className="mt-10 rounded-2xl border border-[#E7E0D2] bg-white px-6 py-12 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#1B2A4A] text-lg text-[#FAF7EF]">
-          ✓
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1B2A4A]/40 px-5 backdrop-blur-sm">
+        <div className="w-full max-w-sm rounded-2xl bg-white px-6 py-10 text-center shadow-xl">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#1B2A4A] text-lg text-[#FAF7EF]">
+            ✓
+          </div>
+          <h2 className="font-serif text-xl font-semibold text-[#1B2A4A]">¡Gracias por responder!</h2>
+          <p className="mt-2 text-sm leading-relaxed text-[#5B5646]">
+            {thankYouMessage || "Tu respuesta ha sido registrada."}
+          </p>
         </div>
-        <h2 className="font-serif text-xl font-semibold text-[#1B2A4A]">¡Gracias por responder!</h2>
-        <p className="mt-2 text-sm leading-relaxed text-[#5B5646]">
-          {thankYouMessage || "Tu respuesta ha sido registrada."}
-        </p>
       </div>
     )
   }
@@ -61,9 +63,7 @@ export default function PublicSurveyForm({
         ) : (
           <div key={q.id} className="rounded-2xl border border-[#E7E0D2] bg-white p-5">
             <div className="mb-1 flex items-baseline gap-2">
-              {/* <span className="font-serif text-xs font-semibold text-[#B98A2F]">
-                {String(i + 1).padStart(2, "0")}
-              </span> */}
+
               <label className="text-[15px] font-medium leading-snug text-[#201C16]">
                 {q.label} {q.is_required && <span className="text-[#B54B3B]">*</span>}
               </label>
