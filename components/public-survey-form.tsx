@@ -61,9 +61,9 @@ export default function PublicSurveyForm({
         ) : (
           <div key={q.id} className="rounded-2xl border border-[#E7E0D2] bg-white p-5">
             <div className="mb-1 flex items-baseline gap-2">
-              <span className="font-serif text-xs font-semibold text-[#B98A2F]">
+              {/* <span className="font-serif text-xs font-semibold text-[#B98A2F]">
                 {String(i + 1).padStart(2, "0")}
-              </span>
+              </span> */}
               <label className="text-[15px] font-medium leading-snug text-[#201C16]">
                 {q.label} {q.is_required && <span className="text-[#B54B3B]">*</span>}
               </label>
