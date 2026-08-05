@@ -11,9 +11,14 @@ export function getEmbedCode(slug: string) {
 <script>
 (function() {
   window.addEventListener('message', function(e) {
-    if (e.data && e.data.type === 'aseduis-survey-height' && e.data.slug === '${slug}') {
-      var iframe = document.getElementById('iframe-${slug}');
-      if (iframe) iframe.style.height = e.data.height + 'px';
+    if (!e.data || e.data.slug !== '${slug}') return;
+    var iframe = document.getElementById('iframe-${slug}');
+    if (!iframe) return;
+    if (e.data.type === 'aseduis-survey-height') {
+      iframe.style.height = e.data.height + 'px';
+    }
+    if (e.data.type === 'aseduis-survey-scroll-top') {
+      iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 })();

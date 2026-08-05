@@ -48,10 +48,11 @@ export default async function PublicSurveyPage({ params }: { params: Promise<{ s
         
 
         <PublicSurveyForm
-          surveyId={survey.id}
-          questions={questions ?? []}
-          thankYouMessage={survey.thank_you_message}
-        />
+            surveyId={survey.id}
+            slug={survey.slug}
+            questions={questions ?? []}
+            thankYouMessage={survey.thank_you_message}
+          />
       </div>
 
       <script

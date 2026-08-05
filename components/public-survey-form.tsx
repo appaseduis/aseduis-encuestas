@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect , useState } from "react"
 import { submitResponse } from "@/lib/actions/responses"
+
 
 type Question = {
   id: string
@@ -15,10 +16,12 @@ type Question = {
 
 export default function PublicSurveyForm({
   surveyId,
+  slug,
   questions,
   thankYouMessage,
 }: {
   surveyId: string
+  slug: string
   questions: Question[]
   thankYouMessage: string | null
 }) {
@@ -35,21 +38,26 @@ export default function PublicSurveyForm({
     setDone(true)
   }
 
+  useEffect(() => {
+    if (done) {
+      window.parent.postMessage({ type: "aseduis-survey-scroll-top", slug }, "*")
+    }
+  }, [done, slug])
+
   if (done) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1B2A4A]/40 px-5 backdrop-blur-sm">
-        <div className="w-full max-w-sm rounded-2xl bg-white px-6 py-10 text-center shadow-xl">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#1B2A4A] text-lg text-[#FAF7EF]">
-            ✓
-          </div>
-          <h2 className="font-serif text-xl font-semibold text-[#1B2A4A]">¡Gracias por responder!</h2>
-          <p className="mt-2 text-sm leading-relaxed text-[#5B5646]">
-            {thankYouMessage || "Tu respuesta ha sido registrada."}
-          </p>
+      <div className="mt-10 rounded-2xl border border-[#E7E0D2] bg-white px-6 py-12 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#1B2A4A] text-lg text-[#FAF7EF]">
+          ✓
         </div>
+        <h2 className="font-serif text-xl font-semibold text-[#1B2A4A]">¡Gracias por responder!</h2>
+        <p className="mt-2 text-sm leading-relaxed text-[#5B5646]">
+          {thankYouMessage || "Tu respuesta ha sido registrada."}
+        </p>
       </div>
     )
   }
+
 
   return (
     <form action={handleSubmit} className="mt-8 space-y-5">
