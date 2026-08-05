@@ -1,8 +1,9 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createServiceClient } from "@/lib/supabase/service"
 import { cookies, headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+
 
 type ActionResult = { error?: string; success?: boolean }
 
@@ -38,18 +39,21 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
     }
   }
 
+  const admin = createServiceClient()
+
   const headersList = await headers()
   const ip = headersList.get("x-forwarded-for")?.split(",")[0] ?? null
   const userAgent = headersList.get("user-agent") ?? null
 
-  const { data: participant } = await supabase.from("participants").insert({
+  const { data: participant, error: participantError } = await admin.from("participants").insert({
     survey_id: surveyId, ip_address: ip, user_agent: userAgent,
   }).select("id").single()
+  if (participantError) return { error: participantError.message }
 
-  const { data: response, error: responseError } = await supabase.from("responses").insert({
+  const { data: response, error: responseError } = await admin.from("responses").insert({
     survey_id: surveyId, participant_id: participant?.id ?? null,
   }).select("id").single()
-  if (responseError || !response) return { error: "Error al guardar la respuesta" }
+  if (responseError || !response) return { error: responseError?.message ?? "Error al guardar la respuesta" }
 
   const answers = (questions ?? []).map((q) => {
     if (q.type === "section") return null
@@ -66,11 +70,12 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
   }).filter(Boolean)
 
   if (answers.length) {
-    await supabase.from("response_answers").insert(answers as never[])
+    const { error: answersError } = await admin.from("response_answers").insert(answers as never[])
+    if (answersError) return { error: answersError.message }
   }
 
   if (participant) {
-    await supabase.from("participants").update({ finished_at: new Date().toISOString() }).eq("id", participant.id)
+    await admin.from("participants").update({ finished_at: new Date().toISOString() }).eq("id", participant.id)
   }
 
   if (!survey.allow_duplicate_responses) {
@@ -80,6 +85,7 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
   return { success: true }
 
 }
+
 export async function deleteAllResponses(surveyId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -92,5 +98,6 @@ export async function deleteAllResponses(surveyId: string) {
     admin_id: user.id, action: "delete_all_responses", entity: "survey", entity_id: surveyId,
   })
 
+  const { revalidatePath } = await import("next/cache")
   revalidatePath(`/dashboard/encuestas/${surveyId}/resultados`)
 }
