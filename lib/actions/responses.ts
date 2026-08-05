@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { cookies, headers } from "next/headers"
+import { revalidatePath } from "next/cache"
 
 type ActionResult = { error?: string; success?: boolean }
 
@@ -77,4 +78,19 @@ export async function submitResponse(surveyId: string, formData: FormData): Prom
   }
 
   return { success: true }
+
+}
+export async function deleteAllResponses(surveyId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  await supabase.from("responses").delete().eq("survey_id", surveyId)
+  await supabase.from("participants").delete().eq("survey_id", surveyId)
+
+  await supabase.from("audit_log").insert({
+    admin_id: user.id, action: "delete_all_responses", entity: "survey", entity_id: surveyId,
+  })
+
+  revalidatePath(`/dashboard/encuestas/${surveyId}/resultados`)
 }

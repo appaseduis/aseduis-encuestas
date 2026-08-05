@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { getEmbedCode } from "@/lib/embed-code"
 import EmbedCodeBox from "@/components/embed-code-box"
+import DeleteResponsesButton from "@/components/delete-responses-button"
+import { deleteAllResponses } from "@/lib/actions/responses"
 
 type OptionCount = { label: string; count: number }
 
@@ -36,12 +38,15 @@ export default async function ResultadosPage({ params }: { params: Promise<{ id:
           <h1 className="text-2xl font-bold">{survey.title}</h1>
           <p className="text-sm text-gray-500">Resultados — {total} respuestas</p>
         </div>
-        <a
-          href={`/dashboard/encuestas/${id}/resultados/export`}
-          className="rounded bg-black px-4 py-2 text-sm text-white"
-        >
-          Exportar CSV
-        </a>
+        <div className="flex gap-2">
+          <a
+            href={`/dashboard/encuestas/${id}/resultados/export`}
+            className="rounded bg-black px-4 py-2 text-sm text-white"
+          >
+            Exportar CSV
+          </a>
+          <DeleteResponsesButton surveyId={id} action={deleteAllResponses} />
+        </div>
       </div>
 
       <div className="mb-8">
