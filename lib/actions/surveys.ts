@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { surveySchema } from "@/lib/validations/survey"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { DEFAULT_THEME_ID } from "@/lib/themes"
 
 type ActionResult = { error?: string }
 
@@ -11,6 +12,7 @@ export async function createSurvey(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: "No autenticado" }
+
 
   const raw = {
     title: formData.get("title") as string,
@@ -22,6 +24,7 @@ export async function createSurvey(formData: FormData): Promise<ActionResult> {
     thank_you_message: formData.get("thank_you_message") as string,
     allow_duplicate_responses: formData.get("allow_duplicate_responses") === "on",
     is_public: formData.get("is_public") === "on",
+    theme_id: (formData.get("theme_id") as string) || DEFAULT_THEME_ID,
   }
 
   const parsed = surveySchema.safeParse(raw)
@@ -62,6 +65,7 @@ export async function updateSurvey(id: string, formData: FormData): Promise<Acti
     thank_you_message: formData.get("thank_you_message") as string,
     allow_duplicate_responses: formData.get("allow_duplicate_responses") === "on",
     is_public: formData.get("is_public") === "on",
+    theme_id: (formData.get("theme_id") as string) || DEFAULT_THEME_ID,
   }
 
   const parsed = surveySchema.safeParse(raw)
@@ -106,6 +110,7 @@ export async function duplicateSurvey(id: string) {
     allow_duplicate_responses: original.allow_duplicate_responses,
     is_public: original.is_public,
     created_by: user.id,
+    theme_id: original.theme_id,
   }).select("id").single()
   if (error || !copy) return
 

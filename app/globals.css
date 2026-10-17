@@ -3,11 +3,29 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Defaults del tema de encuesta (se sobrescriben inline por encuesta) */
+  --bg-survey: #FAF7EF;
+  --bg-card: #FFFFFF;
+}
+
+/* No-inline: las utilidades usan var(--color-*), así el style inline las sobrescribe */
+@theme {
+  --color-brand: #1B2A4A;
+  --color-brand-dark: #14213D;
+  --color-ink: #201C16;
+  --color-muted: #5B5646;
+  --color-line: #E7E0D2;
+  --color-field: #FDFCF8;
+  --color-accent: #B98A2F;
+  --color-danger: #B54B3B;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-survey: var(--bg-survey);
+  --color-card: var(--bg-card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -23,4 +41,60 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+  }
+
+  .btn-primary {
+    background: var(--color-brand);
+    color: #fff;
+    transition: background-color 0.15s;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--color-brand-dark); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+
+  .input {
+    width: 100%;
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-field);
+    color: var(--color-ink);
+    padding: 0.625rem 0.875rem;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input::placeholder { color: var(--color-muted); opacity: 0.7; }
+  .input:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 18%, transparent);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-line);
+    border-radius: 9999px;
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .chip:hover { border-color: var(--color-brand); }
+  input:checked + .chip {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+  }
+  input:focus-visible + .chip { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+
+  .star { color: var(--color-line); transition: color 0.15s; }
+  input:checked + .star { color: var(--color-accent); }
 }

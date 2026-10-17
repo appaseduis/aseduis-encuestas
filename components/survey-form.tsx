@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { slugify } from "@/lib/validations/survey"
+import ThemePicker from "@/components/theme-picker"
 
 type Survey = {
   id?: string
@@ -14,6 +15,7 @@ type Survey = {
   thank_you_message?: string | null
   allow_duplicate_responses?: boolean
   is_public?: boolean
+  theme_id?: string | null
 }
 
 export default function SurveyForm({
@@ -122,6 +124,8 @@ export default function SurveyForm({
         </label>
       </div>
 
+      <ThemePicker defaultValue={survey?.theme_id} />
+      
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button

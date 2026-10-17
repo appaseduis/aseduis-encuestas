@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { isThemeId } from "@/lib/themes"
 
 export const surveySchema = z.object({
   title: z.string().min(3, "Mínimo 3 caracteres"),
@@ -10,6 +11,7 @@ export const surveySchema = z.object({
   thank_you_message: z.string().optional(),
   allow_duplicate_responses: z.boolean(),
   is_public: z.boolean(),
+  theme_id: z.string().refine(isThemeId, "Paleta no válida"),
 }).refine(
   (data) => !data.start_date || !data.end_date || data.start_date <= data.end_date,
   { message: "La fecha de fin debe ser posterior a la de inicio", path: ["end_date"] }
