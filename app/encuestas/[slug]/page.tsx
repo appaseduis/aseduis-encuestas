@@ -33,11 +33,17 @@ export default async function PublicSurveyPage({ params }: { params: Promise<{ s
   const { data: questions } = await supabase
     .from("questions").select("*, question_options(*)").eq("survey_id", survey.id).order("order_index")
 
-  return (
+    return (
     <div style={style} className={`survey-root ${inter.variable} ${lora.variable} p-3 font-sans text-ink sm:p-4`}>
       <div className="mx-auto max-w-2xl overflow-hidden rounded-3xl bg-survey shadow-sm ring-1 ring-line">
         {survey.cover_image_url && (
-          <img src={survey.cover_image_url} alt="" className="h-40 w-full object-cover sm:h-56" />
+          <div className="flex justify-center px-5 pt-8 sm:px-10">
+            <img
+              src={survey.cover_image_url}
+              alt=""
+              className="h-auto max-h-56 w-full object-contain sm:max-h-72"
+            />
+          </div>
         )}
 
         <div className="px-5 pb-12 pt-8 sm:px-10">
