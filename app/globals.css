@@ -98,3 +98,9 @@ body {
   .star { color: var(--color-line); transition: color 0.15s; }
   input:checked + .star { color: var(--color-accent); }
 }
+
+/* Iframe de encuesta: fondo transparente para que se vea el panel redondeado */
+html:has(.survey-root),
+html:has(.survey-root) body {
+  background: transparent;
+}
