@@ -3,6 +3,7 @@ import PublicSurveyForm from "@/components/public-survey-form"
 import { notFound } from "next/navigation"
 import { Lora, Inter } from "next/font/google"
 import { getTheme, themeStyle } from "@/lib/themes"
+import RichText from "@/components/rich-text"
 
 const lora = Lora({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-lora" })
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -33,7 +34,7 @@ export default async function PublicSurveyPage({ params }: { params: Promise<{ s
   const { data: questions } = await supabase
     .from("questions").select("*, question_options(*)").eq("survey_id", survey.id).order("order_index")
 
-    return (
+  return (
     <div style={style} className={`survey-root ${inter.variable} ${lora.variable} p-3 font-sans text-ink sm:p-4`}>
       <div className="mx-auto max-w-2xl overflow-hidden rounded-3xl bg-survey shadow-sm ring-1 ring-line">
         {survey.cover_image_url && (
@@ -52,9 +53,10 @@ export default async function PublicSurveyPage({ params }: { params: Promise<{ s
             {survey.title}
           </h1>
           {survey.description && (
-            <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-muted">
-              {survey.description}
-            </p>
+            <RichText
+              text={survey.description}
+              className="mt-4 text-[15px] leading-7 text-muted"
+            />
           )}
 
           <PublicSurveyForm
